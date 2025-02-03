@@ -1,3 +1,8 @@
+using angularApiProducts.Data;
+using angularApiProducts.Models;
+using Microsoft.EntityFrameworkCore;
+
+
 
 namespace angularApiProducts
 {
@@ -13,6 +18,8 @@ namespace angularApiProducts
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddDbContext<ProductApiDbContext>(options => options.UseSqlServer("DefaultConnection"));
+
 
             var app = builder.Build();
 
