@@ -51,14 +51,21 @@ namespace angularApiProducts.Controllers
 
         // PUT: api/Product/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProduct(int id, Products product)
+        public async Task<IActionResult> UpdateProduct(int id, [FromBody] Products updatedProduct)
         {
-            if (id != product.Id)
+            if (id != updatedProduct.Id)
             {
-                return BadRequest();
+                return BadRequest("Produkt-ID matcher ikke.");
             }
 
-            _context.Entry(product).State = EntityState.Modified;
+            var product = await _context.Product.FindAsync(id);
+            if (product == null)
+            {
+                return NotFound("Produkt ikke fundet.");
+            }
+
+            // 💡 Opdater kun prisen!
+            product.Price = updatedProduct.Price;
 
             try
             {
@@ -76,8 +83,9 @@ namespace angularApiProducts.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok(product); // Returner det opdaterede produkt
         }
+
 
         // DELETE: api/Product/5
         [HttpDelete("{id}")]
