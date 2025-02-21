@@ -6,16 +6,17 @@ Angular modtager svaret og viser dataene på skærmen.
 Hvis brugeren redigerer eller tilføjer data, sender Angular en ny HTTP-forespørgsel til API’et for at gemme ændringerne i databasen.
 
 
-HENTE OG VISE DATA
+## HENTE OG VISE DATA
 
 1️⃣. API Controller i .NET
 Din ProductController i .NET API’et ser sådan ud:
-
+```csharp
 [HttpGet]
 public async Task<ActionResult<IEnumerable<Products>>> GetProducts()
 {
     return await _context.Product.ToListAsync();
 }
+```
 📌 Hvad sker her?
 
 API’en modtager en GET-request fra Angular.
@@ -25,7 +26,7 @@ API’en henter alle produkter fra databasen.
 2️. ProductService i Angular
 For at hente data i Angular, opretter vi en service (product.service.ts) til at håndtere API-kald:
 
-
+```angular
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -48,6 +49,7 @@ export class ProductService {
     return this.http.get<Product[]>(this.apiUrl);
   }
 }
+```
 📌 Hvad sker her?
 
 Angular bruger HttpClient til at sende en HTTP GET-request til API’et.
@@ -55,6 +57,7 @@ API’et svarer med en liste af produkter (JSON).
 Angular konverterer JSON-dataene til en liste af Product-objekter.
 
 API Model ser sådan ud og passer til interface i Angular
+```csharp
 namespace angularApiProducts.Models
 {
     public class Products
@@ -64,11 +67,12 @@ namespace angularApiProducts.Models
         public double Price { get; set; }
     }
 }
-
+```
 
 3️. Hent og vis produkter i en Angular-komponent
 I product-list.component.ts, skal vi kalde getProducts() for at hente og vise dataene:
 
+```angular
 import { Component, OnInit } from '@angular/core';
 import { ProductService, Product } from '../../services/product.service';
 
@@ -88,6 +92,7 @@ export class ProductListComponent implements OnInit {
     });
   }
 }
+```
 📌 Hvad sker her?
 
 Når komponenten indlæses (ngOnInit()), henter vi data fra API’et.
@@ -124,7 +129,11 @@ public async Task<IActionResult> UpdateProduct(int id, Products product)
     
     return NoContent();
 }
+```
+📌 Hvad sker her?
 
+API’et modtager en PUT-request med det opdaterede produkt.
+API’et opdaterer produktet i databasen og gemmer ændringerne.
 
 
 2️⃣ . ProductService i Angular (Metode til at opdatere produkt)
