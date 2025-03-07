@@ -11,8 +11,8 @@ using angularApiProducts.Data;
 namespace angularApiProducts.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250203120720_init")]
-    partial class init
+    [Migration("20250305100338_newCategory")]
+    partial class newCategory
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,6 +31,10 @@ namespace angularApiProducts.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()

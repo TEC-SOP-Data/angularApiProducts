@@ -2,8 +2,6 @@ using angularApiProducts.Data;
 using angularApiProducts.Models;
 using Microsoft.EntityFrameworkCore;
 
-
-
 namespace angularApiProducts
 {
     public class Program
@@ -12,38 +10,44 @@ namespace angularApiProducts
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-
-            builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
-            builder.Services.AddDbContext<ProductApiDbContext>(options =>
-options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
+            // Tilføj CORS-tjeneste til DI-containeren
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowAngular",
-                    policy => policy.WithOrigins("http://localhost:4200")
-                                    .AllowAnyMethod()
-                                    .AllowAnyHeader());
+                options.AddPolicy("AllowLocalhost",
+                    policy =>
+                    {
+                        policy.WithOrigins("http://localhost:4200")  // Din frontend URL
+                            .AllowAnyMethod()  // Tillad alle HTTP-metoder (GET, POST, PUT, DELETE)
+                            .AllowAnyHeader()  // Tillad alle headers
+                            .AllowCredentials();  // Tillad cookies (valgfrit)
+                    });
             });
+
+            // Tilføj de andre services
+            builder.Services.AddControllers();
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
+
+            // Tilføj databasen (EF Core)
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+            // Aktiver Swagger UI, kun i udviklingsmiljø
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
 
-            app.UseHttpsRedirection();
+            // Aktiver CORS-politik
+            app.UseCors("AllowLocalhost");
 
+            app.UseHttpsRedirection();
             app.UseAuthorization();
 
-            app.UseCors("AllowAngular");
-
+            // Map controllers
             app.MapControllers();
 
             app.Run();

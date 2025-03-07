@@ -2,8 +2,6 @@
 using angularApiProducts.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace angularApiProducts.Controllers
 {
@@ -11,9 +9,9 @@ namespace angularApiProducts.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly ProductApiDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public ProductController(ProductApiDbContext context)
+        public ProductController(ApplicationDbContext context)
         {
             _context = context;
         }
